@@ -148,7 +148,7 @@ def plot_trailing(ticker, start, end):
     print(st.dataframe(trailing_all.dropna()))
         
     st.subheader('Painel Interativo, {} observações móveis,\
-                     from {} to {}'.format(len(ii), parse(str(trailing_all.dropna().index[0])).date(),
+                     de {} até {}'.format(len(ii), parse(str(trailing_all.dropna().index[0])).date(),
                      parse(str(trailing_all.dropna().index[-1])).date()))
     st.line_chart(ii, width=800, height=120)
     
@@ -210,7 +210,7 @@ def rolling_sharpe_plot(ticker, start, end):
     ret = data_.pct_change()[1:]
     start_sp = data_.index[0].strftime('%Y-%m-%d')
     sp500 = pdr.get_data_yahoo('^SP500TR', start= start_sp, end = str(end) )
-    sp500_ret = sp500['Fechamento'].pct_change()[1:]
+    sp500_ret = sp500['Close'].pct_change()[1:]
         
     days2 = st.slider('Dias úteis para mover', 5, 130, 50)
     rs_sp500 = sp500_ret.rolling(days2).apply(rolling_sharpe)
