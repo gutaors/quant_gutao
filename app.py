@@ -134,7 +134,7 @@ def plot_trailing(ticker, start, end):
     trailing_all.columns = ['Median', 'Max', 'Min','IQR','Q3 + 1.5IQR','Q1 - 1.5IQR']
     fig, ax = plt.subplots(figsize = (9,5))
     trailing_all.plot(ax = ax)
-    ax.set_title('Rolling nonParametric Statistics (%s days)'%days
+    ax.set_title('Estatística não paramétrica móvel (%s dias)'%days
                      , pad = 30, fontdict = {'fontsize' : 17})
     ax.set_xlim(ax.get_xlim()[0] - 15, ax.get_xlim()[1] + 15)
     ax.legend(bbox_to_anchor=(0,0.96,0.96,0.2), loc="lower left",
@@ -144,10 +144,10 @@ def plot_trailing(ticker, start, end):
     st.pyplot()
         
     ii = trailing_all.dropna().reset_index().drop('Date', axis = 1)
-    st.subheader('Rolling nonParametric Statistics (%s days)'%days)
+    st.subheader('Estatística não paramétrica móvel (%s dias)'%days)
     print(st.dataframe(trailing_all.dropna()))
         
-    st.subheader('Interactive chart, {} rolling observations,\
+    st.subheader('Painel Interativo, {} observações móveis,\
                      from {} to {}'.format(len(ii), parse(str(trailing_all.dropna().index[0])).date(),
                      parse(str(trailing_all.dropna().index[-1])).date()))
     st.line_chart(ii, width=800, height=120)
@@ -195,12 +195,12 @@ def plot_trailing(ticker, start, end):
        
         return df
     
-    st.subheader('Number outliers for each datarange (%s business days)'%days)
+    st.subheader('Número de outliers para cada faixa de datas (%s dias úteis)'%days)
     df_outliers = outliers()
     st.dataframe(df_outliers)
-    st.subheader('Sorted by number of positive outliers (decreasing order)')
+    st.subheader('Outliers positivos em ordem numérica (ordem decrecente)')
     st.dataframe(df_outliers.sort_values(by = 'Right tail', ascending = False))
-    st.subheader('Sorted by number of negative outliers (decreasing order)')
+    st.subheader('Outliers negativos em ordem numérica (ordem decrecente)')
     st.dataframe(df_outliers.sort_values(by = 'Left tail',ascending = False))
    
    
@@ -210,17 +210,17 @@ def rolling_sharpe_plot(ticker, start, end):
     ret = data_.pct_change()[1:]
     start_sp = data_.index[0].strftime('%Y-%m-%d')
     sp500 = pdr.get_data_yahoo('^SP500TR', start= start_sp, end = str(end) )
-    sp500_ret = sp500['Close'].pct_change()[1:]
+    sp500_ret = sp500['Fechamento'].pct_change()[1:]
         
-    days2 = st.slider('Business Days to roll', 5, 130, 50)
+    days2 = st.slider('Dias úteis para mover', 5, 130, 50)
     rs_sp500 = sp500_ret.rolling(days2).apply(rolling_sharpe)
     rs = ret.rolling(days2).apply(rolling_sharpe)
     fig, ax = plt.subplots(figsize=(10,4))
-    ax.plot(rs.index, rs.values, 'b-', label = 'Geometric Rolling Sharpe %s'%ticker)
-    ax.plot(rs.index, rs_sp500, 'r-', label = 'Geometric Rolling Sharpe S&P500 (TR)')
-    ax.set_title('Geometric Rolling Sharpe ratio (%s days, annualized)'%days2, fontdict = {'fontsize' : 15})
+    ax.plot(rs.index, rs.values, 'b-', label = 'Sharpe Móvel Geométrica %s'%ticker)
+    ax.plot(rs.index, rs_sp500, 'r-', label = 'Sharpe móvel Geométrica S&P500 (TR)')
+    ax.set_title('Razão Sharpe Móvel Geometrica (%s dias, anualizadas)'%days2, fontdict = {'fontsize' : 15})
     ax.set_xlim(ax.get_xlim()[0] - 15, ax.get_xlim()[1] + 15)
-    ax.legend(loc = 'best')
+    ax.legend(loc = 'melhor')
     plt.grid(True)
     st.pyplot()
     
@@ -314,7 +314,7 @@ if check_dates() and pivot_date == True:
         
         trailing_checkbox = st.sidebar.checkbox('Análise de Outlier')
         if trailing_checkbox:  
-            ''' ## Outlier analysis '''
+            ''' ## Análise de Outlier'''
             
             st.markdown('''Para realizar uma análise de outlier, usamos estatísticas não paramétricas em modo contínuo.
             Nos mercados financeiros, a média e o desvio padrão são enganosos, porque a distribuição dos retornos
